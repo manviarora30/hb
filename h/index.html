@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>For My Life ❤️</title>
+    <style>
+      :root {
+        --primary-color: #ff4d6d;
+        --secondary-color: #ffb3c1;
+        --bg-color: #fff0f3;
+        --dark-pink: #c9184a;
+        --pink-light: #ffb3c1;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: var(--bg-color);
+        font-family: "Segoe UI", "Georgia", serif;
+        overflow: hidden;
+        text-align: center;
+      }
+
+      /* --- Gift Box --- */
+      #gift-wrapper {
+        z-index: 10;
+      }
+      .gift-box {
+        width: 150px;
+        height: 150px;
+        background: var(--primary-color);
+        position: relative;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      .gift-box::before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 100%;
+        background: #ffb3c1;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .gift-box::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 20px;
+        background: #ffb3c1;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .lid {
+        width: 160px;
+        height: 40px;
+        background: var(--primary-color);
+        position: absolute;
+        top: -20px;
+        left: -5px;
+        border-radius: 5px;
+      }
+
+      /* --- Main Content --- */
+      #main-content {
+        display: none;
+        opacity: 0;
+        transition: opacity 1s;
+        padding: 20px;
+      }
+
+      /* --- Cake Interaction --- */
+      .cake-container {
+        position: relative;
+        font-size: 5rem;
+        display: inline-block;
+        margin: 20px 0;
+      }
+      .knife {
+        position: absolute;
+        font-size: 2.5rem;
+        top: -20px;
+        right: -30px;
+        display: none;
+        transform: rotate(-45deg);
+        transition: 0.5s;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .action-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+        transition: 0.3s;
+      }
+      .action-btn:hover {
+        background-color: var(--dark-pink);
+        transform: scale(1.05);
+      }
+
+      /* --- Poetry Overlay --- */
+      #poetry-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 77, 109, 1) 0%,
+          rgba(89, 13, 34, 0.98) 100%
+        );
+        z-index: 100;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.8s;
+      }
+      .poem-container {
+        background: white;
+        padding: 30px;
+        border-radius: 30px;
+        max-width: 85%;
+        border: 2px solid var(--pink-light);
+        text-align: center;
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+      .poem-line {
+        font-size: 1.05rem;
+        line-height: 1.5;
+        color: var(--dark-pink);
+        margin: 4px 0;
+        display: block;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.6s ease;
+      }
+      .poem-line.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .jaan-text {
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-top: 15px;
+        display: block;
+      }
+
+      /* --- Big I Love You --- */
+      .big-love {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--primary-color);
+        margin-top: 25px;
+        display: block;
+        opacity: 0;
+        transition: all 1.5s ease;
+        text-shadow: 0 0 10px rgba(255, 77, 109, 0.4);
+      }
+      .big-love.visible {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+
+      .close-poem {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: white;
+        font-size: 2.5rem;
+        cursor: pointer;
+      }
+
+      /* --- Decorations --- */
+      .heart {
+        position: absolute;
+        color: var(--primary-color);
+        animation: floatUp 4s linear forwards;
+        pointer-events: none;
+      }
+      @keyframes floatUp {
+        to {
+          transform: translateY(-100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="bday-song" src="saavane-happy-birthday-254480.mp3"></audio>
+    <audio id="love-song" src="paulyudin-love-485933.mp3"></audio>
+
+    <div id="gift-wrapper">
+      <div onclick="revealSurprise()">
+        <div class="lid"></div>
+        <div class="gift-box"></div>
+      </div>
+      <p
+        style="
+          color: var(--primary-color);
+          font-weight: bold;
+          animation: bounce 2s infinite;
+          margin-top: 20px;
+        "
+      >
+        Tap to open your gift!
+      </p>
+    </div>
+
+    <div id="main-content">
+      <h1 id="bday-title">Happy Birthday, Sohneya! ❤️</h1>
+
+      <div class="cake-container">
+        <span id="cake-emoji">🎂</span>
+        <span class="knife" id="knife-emoji">🔪</span>
+      </div>
+
+      <div class="btn-group">
+        <button class="action-btn" onclick="startCakeCutting()">
+          Cut the Cake 🍰
+        </button>
+        <button class="action-btn" onclick="showPoem()">
+          Read my heart ❤️
+        </button>
+      </div>
+    </div>
+
+    <div id="poetry-overlay">
+      <span class="close-poem" onclick="hidePoem()">&times;</span>
+      <div class="poem-container">
+        <span class="poem-line">tenu khush dekhke eda lagda</span>
+        <span class="poem-line" style="margin-bottom: 12px"
+          >jive har gham bhul aye</span
+        >
+
+        <span class="poem-line">teri akhan ch dubke eda lagda</span>
+        <span class="poem-line" style="margin-bottom: 12px"
+          >jive jannat hi ghum aye</span
+        >
+
+        <span class="poem-line"
+          >menu pata teri akhan ch mere li pyaar bhot ae</span
+        >
+        <span class="poem-line" style="margin-bottom: 12px"
+          >par tu eh pyaar bayaan karn li katrana bhot ae</span
+        >
+
+        <span class="poem-line">ji karda tere kol aake beh jaie</span>
+        <span class="poem-line" style="margin-bottom: 12px"
+          >teri sari gallan sunde sunde teri hi godd ch so jaie</span
+        >
+
+        <span class="poem-line">ek din eh jrur aavega</span>
+        <span class="poem-line" style="margin-bottom: 12px"
+          >tera mera dur rehna ek kissa reh javega</span
+        >
+
+        <span class="poem-line">odo tak tu eh yaad rakhi</span>
+        <span class="poem-line" style="margin-bottom: 12px"
+          >asi tere to bina kise hor te kddi akh ni rakhi</span
+        >
+
+        <span class="poem-line">tu mere li sabton khas ae</span>
+        <span class="poem-line jaan-text">sohneya tu te meri jaan ae</span>
+
+        <span class="big-love" id="final-love">I LOVE YOU ❤️</span>
+      </div>
+    </div>
+
+    <script>
+      const bdaySong = document.getElementById("bday-song");
+      const loveSong = document.getElementById("love-song");
+
+      function revealSurprise() {
+        document.getElementById("gift-wrapper").style.display = "none";
+        const content = document.getElementById("main-content");
+        content.style.display = "block";
+        setTimeout(() => (content.style.opacity = "1"), 100);
+        setInterval(createHeart, 400);
+      }
+
+      function startCakeCutting() {
+        const knife = document.getElementById("knife-emoji");
+        const cake = document.getElementById("cake-emoji");
+        loveSong.pause();
+        loveSong.currentTime = 0;
+        knife.style.display = "block";
+
+        setTimeout(() => {
+          knife.style.transform = "translate(-40px, 40px) rotate(-90deg)";
+          setTimeout(() => {
+            cake.innerHTML = "🍰🍰";
+            knife.style.display = "none";
+            bdaySong.play();
+            document.getElementById("bday-title").innerHTML =
+              "Yay! Happy Birthday! 🎉";
+            for (let i = 0; i < 15; i++) setTimeout(createHeart, i * 100);
+          }, 500);
+        }, 100);
+      }
+
+      function showPoem() {
+        bdaySong.pause();
+        bdaySong.currentTime = 0;
+        loveSong.play();
+
+        const overlay = document.getElementById("poetry-overlay");
+        overlay.style.display = "flex";
+        setTimeout(() => {
+          overlay.style.opacity = "1";
+          const lines = document.querySelectorAll(".poem-line");
+          const finalLove = document.getElementById("final-love");
+
+          lines.forEach((line, index) => {
+            setTimeout(() => line.classList.add("visible"), index * 800);
+          });
+
+          // Final "I LOVE YOU" appears after all lines (800ms * count + extra delay)
+          setTimeout(
+            () => {
+              finalLove.classList.add("visible");
+              // Celebrate with many hearts
+              for (let i = 0; i < 20; i++) setTimeout(createHeart, i * 100);
+            },
+            lines.length * 800 + 500,
+          );
+        }, 10);
+      }
+
+      function hidePoem() {
+        loveSong.pause();
+        const overlay = document.getElementById("poetry-overlay");
+        overlay.style.opacity = "0";
+        setTimeout(() => (overlay.style.display = "none"), 800);
+      }
+
+      function createHeart() {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.top = "100vh";
+        heart.style.fontSize = Math.random() * 20 + 15 + "px";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 4000);
+      }
+    </script>
+  </body>
+</html>
